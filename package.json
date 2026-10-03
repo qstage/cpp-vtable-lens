@@ -1,0 +1,72 @@
+{
+  "name": "cpp-vtable-lens",
+  "displayName": "C++ VTable Index Lens",
+  "description": "Shows virtual function indices (vtable slots) above C++ virtual methods, including inherited ones",
+  "version": "0.1.0",
+  "publisher": "your-name",
+  "engines": { "vscode": "^1.80.0" },
+  "categories": ["Programming Languages", "Other"],
+  "activationEvents": [
+    "onLanguage:cpp",
+    "onLanguage:c",
+    "onLanguage:cuda-cpp"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "cppVtable.reindex", "title": "C++ VTable: Reindex workspace" },
+      { "command": "cppVtable.showVTable", "title": "C++ VTable: Show vtable" }
+    ],
+    "configuration": {
+      "title": "C++ VTable Lens",
+      "properties": {
+        "cppVtable.enabled": { "type": "boolean", "default": true, "description": "Enable vtable CodeLens" },
+        "cppVtable.abi": {
+          "type": "string",
+          "enum": ["msvc", "itanium"],
+          "default": "msvc",
+          "description": "msvc: overloads grouped & reversed, destructor = 1 slot. itanium (GCC/Clang): declaration order, destructor = 2 slots"
+        },
+        "cppVtable.classKeywords": {
+          "type": "array", "items": { "type": "string" },
+          "default": ["class", "struct", "abstract_class"],
+          "description": "Keywords/macros that start a class definition"
+        },
+        "cppVtable.ignoredMacros": {
+          "type": "array", "items": { "type": "string" },
+          "default": ["__declspec", "__attribute__", "alignas", "DECLSPEC_NOVTABLE", "DLL_CLASS_EXPORT"],
+          "description": "Function-like macros that should be skipped in declarations"
+        },
+        "cppVtable.overrideMacros": {
+          "type": "array", "items": { "type": "string" },
+          "default": ["OVERRIDE"],
+          "description": "Macros that mean `override`"
+        },
+        "cppVtable.showOffset": { "type": "boolean", "default": false, "description": "Show byte offset in vtable (index * pointerSize)" },
+        "cppVtable.pointerSize": { "type": "number", "default": 8, "description": "Pointer size in bytes (8 for x64, 4 for x86)" },
+        "cppVtable.include": {
+          "type": "string",
+          "default": "**/*.{h,hh,hpp,hxx,inl,ipp,tpp,cpp,cc,cxx}",
+          "description": "Glob for files to index"
+        },
+        "cppVtable.exclude": {
+          "type": "string",
+          "default": "**/{node_modules,.git,build,out,bin,obj}/**",
+          "description": "Glob for files to exclude from indexing"
+        },
+        "cppVtable.maxFileSizeKB": { "type": "number", "default": 2048, "description": "Skip files larger than this" }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.0",
+    "@types/vscode": "^1.80.0",
+    "@vscode/vsce": "^2.24.0",
+    "typescript": "^5.4.0"
+  }
+}
